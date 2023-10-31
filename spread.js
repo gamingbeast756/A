@@ -1,4 +1,4 @@
-/** @param {NS} ns */
+ /** @param {NS} ns */
 export async function main(ns) {
   let servers = ns.scan();
   let availablePorts = 0;
@@ -6,14 +6,16 @@ export async function main(ns) {
   let useRam = ns.getScriptRam("hack.js");
   let threads = 0;
   let maxRam;
+  let spreadFile="spread.js";
+  let hackFile="hack.js";
   for (let i = 0; i < servers.length; i++) {//loop thru all the servers
     maxRam = ns.getServerMaxRam(servers[i]);
     ram = maxRam - ns.getServerUsedRam(servers[i]);//get amount of unused ram on server
-    if (ram > ns.getScriptRam("spread.js")+ns.getScriptRam("hack.js")) {//check if the server has enough ram
+    if (ram > ns.getScriptRam(spreadFile)+ns.getScriptRam(hackFile)) {//check if the server has enough ram
       if (servers[i] != "home") {
-        ns.scp("spread.js", servers[i]);//copy the spread file to the server
+        ns.scp(spreadFile, servers[i]);//copy the spread file to the server
 
-        ns.scp("hack.js", servers[i]);//copy the hack file to the server
+        ns.scp(hackFile, servers[i]);//copy the hack file to the server
 
         if (!ns.hasRootAccess(servers[i])) {//get root access
           if (ns.fileExists("BruteSSH.exe", "home")) {//check which ports we can open
@@ -36,12 +38,14 @@ export async function main(ns) {
             availablePorts++;
             ns.sqlinject(servers[i]);
           }
-          ns.nuke(servers[i]);
+          try{
+            ns.nuke(servers[i]);
+          }catch(exception e){}
         }
-        ns.exec("spread.js", servers[i]);//spread
+        ns.exec(spreadFile, servers[i]);//spread
         ram = maxRam - ns.getServerUsedRam(servers[i]);//get amount of unused ram on server
         threads = Math.floor(ram / useRam);//get amount of threads we can run
-        ns.exec("hack.js", servers[i], threads)//run the hack
+        ns.exec(hackFile, servers[i], threads)//run the hack
       }
     }
     await ns.sleep(1000);
