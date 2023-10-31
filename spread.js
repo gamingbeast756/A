@@ -3,11 +3,11 @@ export async function main(ns) {
   let servers = ns.scan();
   let availablePorts = 0;
   let ram;
-  let useRam = ns.getScriptRam("hack.js");
   let threads = 0;
   let maxRam;
   let spreadFile="spread.js";
   let hackFile="hack.js";
+  let useRam = ns.getScriptRam(hackFile);
   for (let i = 0; i < servers.length; i++) {//loop thru all the servers
     maxRam = ns.getServerMaxRam(servers[i]);
     ram = maxRam - ns.getServerUsedRam(servers[i]);//get amount of unused ram on server
