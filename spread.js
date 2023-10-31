@@ -40,7 +40,7 @@ export async function main(ns) {
           }
           try{
             ns.nuke(servers[i]);
-          }catch(exception e){}
+          }catch(exception){}
         }
         ns.exec(spreadFile, servers[i]);//spread
         ram = maxRam - ns.getServerUsedRam(servers[i]);//get amount of unused ram on server
